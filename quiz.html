@@ -190,8 +190,7 @@ function renderQuestion() {
 
   const showPrev   = dispIdx > 0;
   const canCheck   = !isChecked && !isReadOnly && selected !== null;
-  const canNext    = isReadOnly || isChecked;
-  const showSubmit = isLast && isChecked && !isReadOnly;
+  const showSubmit = isLast && !isReadOnly;
 
   document.getElementById('question-screen').innerHTML = `
     <div class="q-card">
@@ -214,7 +213,7 @@ function renderQuestion() {
         : ''}
       ${showSubmit
         ? `<button class="quiz-btn success" onclick="submitQuiz()">Submit Exam →</button>`
-        : `<button class="quiz-btn" onclick="goNext()" ${!canNext ? 'disabled' : ''}>Next →</button>`}
+        : `<button class="quiz-btn" onclick="goNext()">Next →</button>`}
     </div>`;
 }
 
