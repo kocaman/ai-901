@@ -6,322 +6,21 @@
 <title>AI-901 Study Guide — Azure AI Fundamentals</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg:        #0a0d14;
-    --surface:   #111521;
-    --border:    #1e2638;
-    --accent:    #3b82f6;
-    --accent2:   #06b6d4;
-    --gold:      #f59e0b;
-    --text:      #e2e8f0;
-    --muted:     #64748b;
-    --pill-a:    rgba(59,130,246,.15);
-    --pill-b:    rgba(6,182,212,.15);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── GRID NOISE BACKGROUND ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0;
-    background-image:
-      radial-gradient(ellipse 80% 60% at 15% 10%, rgba(59,130,246,.12) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 85% 80%, rgba(6,182,212,.10) 0%, transparent 55%),
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.02) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.02) 40px);
-    pointer-events: none;
-  }
-
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
-
-  /* ── NAV ── */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(10,13,20,.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 0;
-  }
-  nav .wrap {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .nav-badge {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .nav-badge .cert-icon {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-  .nav-title { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: .05em; }
-  .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
-  .nav-links a {
-    font-size: 12px; font-family: 'DM Mono', monospace;
-    color: var(--muted); text-decoration: none;
-    padding: 4px 10px; border-radius: 4px;
-    border: 1px solid transparent;
-    transition: all .2s;
-  }
-  .nav-links a:hover { color: var(--accent2); border-color: var(--accent2); background: rgba(6,182,212,.05); }
-
-  /* ── HERO ── */
-  .hero {
-    padding: 64px 0 48px;
-    animation: fadeUp .6s ease both;
-  }
-  .hero-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px; letter-spacing: .15em;
-    color: var(--accent2);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2.2rem, 5vw, 3.4rem);
-    line-height: 1.15;
-    letter-spacing: -.02em;
-    margin-bottom: 16px;
-  }
-  .hero h1 em { font-style: italic; color: var(--accent2); }
-  .hero-sub { font-size: 16px; color: var(--muted); max-width: 540px; margin-bottom: 28px; }
-  .hero-stats {
-    display: flex; gap: 24px; flex-wrap: wrap;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 20px;
-    min-width: 130px;
-  }
-  .stat-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
-  .stat-value { font-size: 22px; font-weight: 600; color: var(--text); }
-  .stat-value.pass { color: var(--gold); }
-  .stat-value.beta { color: var(--accent); }
-
-  /* ── DOMAIN BARS ── */
-  .domains-section { padding: 40px 0 0; animation: fadeUp .6s .15s ease both; }
-  .section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px; letter-spacing: .15em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .domain-bar-wrap { display: flex; flex-direction: column; gap: 12px; }
-  .domain-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 20px;
-    position: relative; overflow: hidden;
-  }
-  .domain-bar::after {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    border-radius: 10px 0 0 10px;
-    opacity: .12;
-  }
-  .domain-bar.d1::after { width: 42.5%; background: var(--accent); }
-  .domain-bar.d2::after { width: 57.5%; background: var(--accent2); }
-  .domain-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .domain-name { font-weight: 600; font-size: 14px; }
-  .domain-pct {
-    font-family: 'DM Mono', monospace; font-size: 13px;
-  }
-  .d1 .domain-pct { color: var(--accent); }
-  .d2 .domain-pct { color: var(--accent2); }
-  .domain-track {
-    height: 4px; background: var(--border); border-radius: 4px; overflow: hidden;
-  }
-  .domain-fill { height: 100%; border-radius: 4px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
-  .d1 .domain-fill { width: 42.5%; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .d2 .domain-fill { width: 57.5%; background: linear-gradient(90deg, var(--accent2), #10b981); }
-
-  /* ── ACCORDION OBJECTIVES ── */
-  .objectives-section { padding: 40px 0 0; animation: fadeUp .6s .25s ease both; }
-  .obj-group { margin-bottom: 10px; }
-  .obj-domain-header {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 10px; padding-top: 8px;
-  }
-  .obj-domain-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 4px;
-  }
-  .d1-badge { background: var(--pill-a); color: var(--accent); border: 1px solid rgba(59,130,246,.25); }
-  .d2-badge { background: var(--pill-b); color: var(--accent2); border: 1px solid rgba(6,182,212,.25); }
-  .obj-domain-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
-
-  details {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 8px;
-    overflow: hidden;
-    transition: border-color .2s;
-  }
-  details:hover { border-color: #2d3a52; }
-  details[open] { border-color: var(--accent); }
-  summary {
-    cursor: pointer;
-    list-style: none;
-    padding: 14px 18px;
-    display: flex; align-items: center; justify-content: space-between;
-    user-select: none;
-    font-weight: 600; font-size: 14px;
-  }
-  summary::-webkit-details-marker { display: none; }
-  .summary-chevron {
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: var(--muted);
-    transition: transform .25s, background .2s;
-    flex-shrink: 0;
-  }
-  details[open] .summary-chevron { transform: rotate(180deg); background: rgba(59,130,246,.2); color: var(--accent); }
-  .detail-body { padding: 0 18px 16px; }
-  .detail-body ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .detail-body li {
-    display: flex; gap: 10px; align-items: flex-start;
-    font-size: 13.5px; color: #a8b8d0; line-height: 1.5;
-  }
-  .detail-body li::before {
-    content: '›';
-    color: var(--accent2); font-weight: 700; flex-shrink: 0; margin-top: 1px;
-  }
-
-  /* ── PROGRESS TRACKER ── */
-  .tracker-section { padding: 40px 0 0; animation: fadeUp .6s .35s ease both; }
-  .tracker-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px;
-  }
-  .tracker-item {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 12px 14px;
-    display: flex; align-items: center; gap: 10px;
-    cursor: pointer; transition: border-color .2s, background .2s;
-    user-select: none;
-  }
-  .tracker-item:hover { border-color: #2d3a52; background: #13192a; }
-  .tracker-item.done { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.05); }
-  .check-box {
-    width: 18px; height: 18px; border-radius: 4px;
-    border: 2px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; flex-shrink: 0;
-    transition: all .2s;
-  }
-  .tracker-item.done .check-box { border-color: #10b981; background: #10b981; color: white; }
-  .tracker-label { font-size: 12.5px; line-height: 1.4; }
-  .progress-summary {
-    margin-top: 14px; text-align: right;
-    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
-  }
-  #prog-bar-wrap { height: 3px; background: var(--border); border-radius: 3px; margin-top: 6px; overflow: hidden; }
-  #prog-bar { height: 100%; background: linear-gradient(90deg, var(--accent), #10b981); border-radius: 3px; width: 0; transition: width .4s ease; }
-
-  /* ── RESOURCES ── */
-  .resources-section { padding: 40px 0 60px; animation: fadeUp .6s .45s ease both; }
-  .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-  .resource-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    text-decoration: none; color: inherit;
-    display: flex; flex-direction: column; gap: 6px;
-    transition: border-color .2s, transform .2s;
-  }
-  .resource-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
-  .resource-icon { font-size: 20px; margin-bottom: 4px; }
-  .resource-title { font-weight: 600; font-size: 14px; }
-  .resource-desc { font-size: 12.5px; color: var(--muted); }
-
-  /* ── FLASHCARD WIDGET ── */
-  .flashcard-section { padding: 40px 0 0; animation: fadeUp .6s .4s ease both; }
-  .flashcard-wrap { perspective: 1000px; }
-  .flashcard {
-    width: 100%; max-width: 560px; height: 180px;
-    position: relative; cursor: pointer;
-    transform-style: preserve-3d;
-    transition: transform .5s cubic-bezier(.4,0,.2,1);
-    margin-bottom: 14px;
-  }
-  .flashcard.flipped { transform: rotateY(180deg); }
-  .fc-face {
-    position: absolute; inset: 0;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 24px;
-    backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  .fc-back { transform: rotateY(180deg); border-color: rgba(59,130,246,.3); }
-  .fc-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  .fc-text { font-size: 15px; line-height: 1.55; }
-  .fc-back .fc-text { font-size: 13.5px; color: #a8b8d0; }
-  .fc-controls { display: flex; gap: 10px; align-items: center; }
-  .fc-btn {
-    padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer;
-    border: 1px solid var(--border); background: var(--surface); color: var(--text);
-    font-family: 'DM Sans', sans-serif; transition: all .2s;
-  }
-  .fc-btn:hover { background: #1a2235; border-color: #2d3a52; }
-  .fc-btn.primary { border-color: var(--accent); color: var(--accent); }
-  .fc-btn.primary:hover { background: rgba(59,130,246,.1); }
-  .fc-counter { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-left: auto; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── DIVIDER ── */
-  .divider { height: 1px; background: var(--border); margin: 40px 0 0; }
-
-  /* ── RESP ── */
-  @media (max-width: 560px) {
-    .hero-stats { gap: 12px; }
-    .stat-card { min-width: 100px; padding: 12px 14px; }
-    .nav-links { display: none; }
-  }
-</style>
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="wrap">
-    <div class="nav-badge">
+    <a class="nav-badge" href="index.html">
       <div class="cert-icon">🤖</div>
       <span class="nav-title">AI-901 // Azure AI Fundamentals</span>
-    </div>
+    </a>
     <div class="nav-links">
-      <a href="#objectives">Objectives</a>
-      <a href="#tracker">Tracker</a>
-      <a href="#flashcards">Flashcards</a>
-      <a href="#resources">Resources</a>
+      <a href="objectives.html">Objectives</a>
+      <a href="tracker.html">Tracker</a>
+      <a href="flashcards.html">Flashcards</a>
+      <a href="resources.html">Resources</a>
     </div>
   </div>
 </nav>
@@ -355,7 +54,7 @@
 
   <!-- DOMAIN BARS -->
   <div class="divider"></div>
-  <section class="domains-section" id="objectives">
+  <section class="domains-section">
     <div class="section-label">Exam Domains — Weight Breakdown</div>
     <div class="domain-bar-wrap">
       <div class="domain-bar d1">
@@ -375,272 +74,35 @@
     </div>
   </section>
 
-  <!-- OBJECTIVES -->
-  <section class="objectives-section">
-
-    <!-- Domain 1 -->
-    <div class="obj-group">
-      <div class="obj-domain-header">
-        <span class="obj-domain-badge d1-badge">Domain 1</span>
-        <span class="obj-domain-title">Identify AI Concepts &amp; Responsibilities</span>
-      </div>
-
-      <details>
-        <summary>Describe Principles of Responsible AI <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Describe considerations for <strong>fairness</strong> in an AI solution</li>
-          <li>Describe considerations for <strong>reliability and safety</strong></li>
-          <li>Describe considerations for <strong>privacy and security</strong></li>
-          <li>Describe considerations for <strong>inclusiveness</strong></li>
-          <li>Describe considerations for <strong>transparency</strong></li>
-          <li>Describe considerations for <strong>accountability</strong></li>
-        </ul></div>
-      </details>
-
-      <details>
-        <summary>Identify AI Model Components and Configurations <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Describe how <strong>generative AI models</strong> work</li>
-          <li>Identify an appropriate AI model based on capabilities</li>
-          <li>Identify appropriate <strong>model deployment options</strong> and configuration parameters</li>
-        </ul></div>
-      </details>
-
-      <details>
-        <summary>Identify AI Workloads <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Identify scenarios for common AI workloads — generative AI, agentic AI, text analysis, speech, computer vision, information extraction</li>
-          <li>Describe common text analysis techniques: <strong>keyword extraction, entity detection, sentiment analysis, summarization</strong></li>
-          <li>Identify features of <strong>speech recognition and speech synthesis</strong></li>
-          <li>Identify features of <strong>computer vision</strong> and image-generation models</li>
-          <li>Identify techniques to extract information from text, images, audio, and video</li>
-        </ul></div>
-      </details>
-    </div>
-
-    <!-- Domain 2 -->
-    <div class="obj-group">
-      <div class="obj-domain-header">
-        <span class="obj-domain-badge d2-badge">Domain 2</span>
-        <span class="obj-domain-title">Implement AI Solutions via Microsoft Foundry</span>
-      </div>
-
-      <details>
-        <summary>Implement Generative AI Apps &amp; Agents via Foundry <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Create effective <strong>system and user prompts</strong> for generative AI models</li>
-          <li>Deploy a model and interact with it in the <strong>Foundry portal</strong></li>
-          <li>Create a lightweight chat client using the <strong>Foundry SDK</strong></li>
-          <li>Create and test a <strong>single-agent solution</strong> in the Foundry portal</li>
-          <li>Create a lightweight client application for an agent</li>
-        </ul></div>
-      </details>
-
-      <details>
-        <summary>Implement AI Solutions for Text &amp; Speech via Foundry <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Build a lightweight app that includes <strong>text analysis</strong></li>
-          <li>Respond to spoken prompts using a deployed <strong>multimodal model</strong></li>
-          <li>Build a lightweight app using <strong>Azure Speech in Foundry Tools</strong></li>
-        </ul></div>
-      </details>
-
-      <details>
-        <summary>Implement AI Solutions with Computer Vision &amp; Image Generation <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Interpret visual input in prompts using a deployed <strong>multimodal model</strong></li>
-          <li>Create new visual outputs using <strong>generative models</strong></li>
-          <li>Build a lightweight application with <strong>vision capabilities</strong></li>
-        </ul></div>
-      </details>
-
-      <details>
-        <summary>Implement AI Solutions for Information Extraction via Foundry <span class="summary-chevron">▾</span></summary>
-        <div class="detail-body"><ul>
-          <li>Extract information from documents and forms using <strong>Azure Content Understanding</strong> in Foundry Tools</li>
-          <li>Extract information from images using Content Understanding</li>
-          <li>Extract information from <strong>audio and video</strong> using Content Understanding</li>
-          <li>Build a lightweight app with information extraction via Content Understanding</li>
-        </ul></div>
-      </details>
-    </div>
-  </section>
-
-  <!-- PROGRESS TRACKER -->
+  <!-- QUICK LINKS -->
   <div class="divider"></div>
-  <section class="tracker-section" id="tracker">
-    <div class="section-label">Study Progress Tracker</div>
-    <div class="tracker-grid" id="tracker-grid">
-      <!-- populated by JS -->
-    </div>
-    <div class="progress-summary">
-      <span id="prog-text">0 / 0 topics studied</span>
-      <div id="prog-bar-wrap"><div id="prog-bar"></div></div>
-    </div>
-  </section>
-
-  <!-- FLASHCARDS -->
-  <div class="divider"></div>
-  <section class="flashcard-section" id="flashcards">
-    <div class="section-label">Key Concept Flashcards</div>
-    <div class="flashcard-wrap">
-      <div class="flashcard" id="fc" onclick="flipCard()">
-        <div class="fc-face fc-front">
-          <div class="fc-label">Concept — click to flip</div>
-          <div class="fc-text" id="fc-q"></div>
-        </div>
-        <div class="fc-face fc-back">
-          <div class="fc-label">Answer</div>
-          <div class="fc-text" id="fc-a"></div>
-        </div>
-      </div>
-    </div>
-    <div class="fc-controls">
-      <button class="fc-btn" onclick="prevCard()">← Prev</button>
-      <button class="fc-btn primary" onclick="nextCard()">Next →</button>
-      <span class="fc-counter" id="fc-counter">1 / 20</span>
-    </div>
-  </section>
-
-  <!-- RESOURCES -->
-  <div class="divider"></div>
-  <section class="resources-section" id="resources">
-    <div class="section-label">Official Study Resources</div>
-    <div class="resource-grid">
-      <a class="resource-card" href="https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-901/" target="_blank">
-        <div class="resource-icon">📋</div>
-        <div class="resource-title">Official Exam Page</div>
-        <div class="resource-desc">Exam details, scheduling, languages, and certification path info.</div>
+  <section class="quick-links">
+    <div class="section-label">Study Tools</div>
+    <div class="quick-grid">
+      <a class="quick-card" href="objectives.html">
+        <div class="quick-icon">📚</div>
+        <div class="quick-title">Exam Objectives</div>
+        <div class="quick-desc">All 7 exam objectives across both domains with full detail.</div>
       </a>
-      <a class="resource-card" href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ai-901" target="_blank">
-        <div class="resource-icon">📖</div>
-        <div class="resource-title">Official Study Guide</div>
-        <div class="resource-desc">Full skills measured document, updated April 15, 2026.</div>
+      <a class="quick-card" href="tracker.html">
+        <div class="quick-icon">✅</div>
+        <div class="quick-title">Progress Tracker</div>
+        <div class="quick-desc">Track which of the 28 topics you've studied.</div>
       </a>
-      <a class="resource-card" href="https://learn.microsoft.com/en-us/training/courses/ai-901t00" target="_blank">
-        <div class="resource-icon">🎓</div>
-        <div class="resource-title">Instructor-Led Course (AI-901T00)</div>
-        <div class="resource-desc">Introduction to AI in Azure — official Microsoft Learn course.</div>
+      <a class="quick-card" href="flashcards.html">
+        <div class="quick-icon">🃏</div>
+        <div class="quick-title">Flashcards</div>
+        <div class="quick-desc">20 key concept cards with flip-to-reveal answers.</div>
       </a>
-      <a class="resource-card" href="https://learn.microsoft.com/en-us/training/paths/ai-concepts/" target="_blank">
-        <div class="resource-icon">🧠</div>
-        <div class="resource-title">Learn Path: AI Concepts</div>
-        <div class="resource-desc">Self-paced modules on core AI fundamentals and concepts.</div>
-      </a>
-      <a class="resource-card" href="https://learn.microsoft.com/en-us/training/paths/get-started-ai-apps-agents/" target="_blank">
-        <div class="resource-icon">⚙️</div>
-        <div class="resource-title">Learn Path: AI Apps &amp; Agents</div>
-        <div class="resource-desc">Building AI applications and agents with Microsoft Foundry.</div>
-      </a>
-      <a class="resource-card" href="https://go.microsoft.com/fwlink/?linkid=2226877" target="_blank">
-        <div class="resource-icon">🖥️</div>
-        <div class="resource-title">Exam Sandbox</div>
-        <div class="resource-desc">Demo the exam environment before your test day.</div>
+      <a class="quick-card" href="resources.html">
+        <div class="quick-icon">🔗</div>
+        <div class="quick-title">Resources</div>
+        <div class="quick-desc">Official Microsoft Learn links, courses, and sandbox.</div>
       </a>
     </div>
   </section>
 
-</div><!-- /wrap -->
+</div>
 
-<script>
-/* ── TRACKER ── */
-const topics = [
-  "Responsible AI – Fairness",
-  "Responsible AI – Reliability & Safety",
-  "Responsible AI – Privacy & Security",
-  "Responsible AI – Inclusiveness",
-  "Responsible AI – Transparency",
-  "Responsible AI – Accountability",
-  "How Generative AI Models Work",
-  "Model Selection by Capability",
-  "Deployment Options & Config",
-  "AI Workload Scenarios",
-  "Text Analysis Techniques",
-  "Speech Recognition & Synthesis",
-  "Computer Vision Capabilities",
-  "Information Extraction Techniques",
-  "System & User Prompt Design",
-  "Foundry Portal – Model Deployment",
-  "Foundry SDK – Chat Client",
-  "Single-Agent Solutions in Foundry",
-  "Text Analysis App Build",
-  "Multimodal Speech Prompts",
-  "Azure Speech in Foundry Tools",
-  "Multimodal Vision Prompts",
-  "Generative Image Models",
-  "Vision Capability App Build",
-  "Azure Content Understanding – Docs",
-  "Content Understanding – Images",
-  "Content Understanding – Audio/Video",
-  "Information Extraction App Build",
-];
-
-const saved = JSON.parse(localStorage.getItem('ai901-progress') || '[]');
-const grid = document.getElementById('tracker-grid');
-
-function saveProgress() {
-  const state = [...grid.querySelectorAll('.tracker-item')].map(el => el.classList.contains('done'));
-  localStorage.setItem('ai901-progress', JSON.stringify(state));
-  updateBar();
-}
-
-function updateBar() {
-  const items = grid.querySelectorAll('.tracker-item');
-  const done = [...items].filter(el => el.classList.contains('done')).length;
-  document.getElementById('prog-text').textContent = `${done} / ${items.length} topics studied`;
-  document.getElementById('prog-bar').style.width = `${(done/items.length)*100}%`;
-}
-
-topics.forEach((t, i) => {
-  const div = document.createElement('div');
-  div.className = 'tracker-item' + (saved[i] ? ' done' : '');
-  div.innerHTML = `<div class="check-box">${saved[i] ? '✓' : ''}</div><span class="tracker-label">${t}</span>`;
-  div.onclick = () => {
-    div.classList.toggle('done');
-    const cb = div.querySelector('.check-box');
-    cb.textContent = div.classList.contains('done') ? '✓' : '';
-    saveProgress();
-  };
-  grid.appendChild(div);
-});
-updateBar();
-
-/* ── FLASHCARDS ── */
-const cards = [
-  { q: "What are the 6 Microsoft Responsible AI principles?", a: "Fairness, Reliability & Safety, Privacy & Security, Inclusiveness, Transparency, and Accountability." },
-  { q: "What is Microsoft Foundry?", a: "A unified portal and SDK for deploying AI models, building apps, creating agents, and managing prompts on Azure." },
-  { q: "What percentage of the AI-901 exam covers Microsoft Foundry implementation?", a: "55–60% — the larger of the two exam domains." },
-  { q: "What text analysis techniques should you know for AI-901?", a: "Keyword extraction, entity detection, sentiment analysis, and summarization." },
-  { q: "What is a system prompt vs. a user prompt?", a: "A system prompt defines the AI's behavior and context; a user prompt is the runtime input from the end user." },
-  { q: "What does Azure Content Understanding do?", a: "Extracts structured information from documents, forms, images, audio, and video using AI models in Foundry Tools." },
-  { q: "What Python knowledge does AI-901 assume?", a: "Familiarity with Python coding syntax and programming techniques — enough to read and write lightweight app code." },
-  { q: "What is a multimodal model?", a: "A model that can process multiple input types — e.g., text + images + audio — in a single inference call." },
-  { q: "What is the passing score for AI-901?", a: "700 out of 1000." },
-  { q: "When does AI-900 retire?", a: "June 30, 2026. AI-901 beta launched April 2026 and becomes GA in June 2026." },
-  { q: "What is Retrieval-Augmented Generation (RAG)?", a: "A pattern where a generative model retrieves relevant documents from a knowledge store before generating a response, reducing hallucinations." },
-  { q: "What is the Foundry SDK used for in AI-901?", a: "Building lightweight chat client applications and agent clients that interact with deployed models on Azure." },
-  { q: "What workloads are covered under AI-901 AI Workloads?", a: "Generative AI, agentic AI, text analysis, speech, computer vision, and information extraction." },
-  { q: "What does OCR stand for and which Azure service provides it?", a: "Optical Character Recognition — provided by Azure AI Vision for extracting text from images." },
-  { q: "What is a single-agent solution in Foundry?", a: "An AI agent configured to autonomously plan and execute tasks using tools and a deployed model, without multi-agent orchestration." },
-  { q: "Define model deployment configuration parameters.", a: "Settings like temperature, max tokens, top-p, and system prompt that control how a deployed model generates responses." },
-  { q: "What is Azure AI Speech?", a: "An Azure service offering speech-to-text, text-to-speech, speech translation, and speaker recognition capabilities." },
-  { q: "What is prompt engineering?", a: "The practice of crafting effective instructions and context in prompts to guide an AI model toward desired outputs." },
-  { q: "What is the difference between supervised and unsupervised learning?", a: "Supervised uses labeled training data with known outputs; unsupervised finds patterns in unlabeled data without predefined categories." },
-  { q: "What does 'responsible AI' mean in the context of AI-901?", a: "Building AI systems that are fair, safe, private, inclusive, transparent, and accountable — following Microsoft's AI principles." },
-];
-
-let idx = 0;
-function render() {
-  const c = cards[idx];
-  document.getElementById('fc-q').textContent = c.q;
-  document.getElementById('fc-a').textContent = c.a;
-  document.getElementById('fc-counter').textContent = `${idx+1} / ${cards.length}`;
-  document.getElementById('fc').classList.remove('flipped');
-}
-function flipCard() { document.getElementById('fc').classList.toggle('flipped'); }
-function nextCard() { idx = (idx+1) % cards.length; render(); }
-function prevCard() { idx = (idx - 1 + cards.length) % cards.length; render(); }
-render();
-</script>
 </body>
 </html>
