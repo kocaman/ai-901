@@ -329,6 +329,48 @@ details[open] .summary-chevron { transform: rotate(180deg); background: rgba(59,
 /* ── DIVIDER ── */
 .divider { height: 1px; background: var(--border); margin: 40px 0 0; }
 
+/* ── USER WIDGET ── */
+.user-widget { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono',monospace; font-size: 11px; color: var(--muted); }
+.user-widget-label { display: none; }
+.user-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; cursor: pointer; transition: border-color .2s; white-space: nowrap; }
+.user-pill:hover { border-color: var(--accent2); color: var(--accent2); }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 32px; max-width: 400px; width: 90%; animation: fadeUp .3s ease; }
+.modal-title { font-family: 'DM Serif Display',serif; font-size: 1.4rem; margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+.modal-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; color: var(--text); font-family: 'DM Mono',monospace; outline: none; }
+.modal-input:focus { border-color: var(--accent); }
+.modal-hint { font-size: 11px; color: #ef4444; margin-top: 6px; min-height: 16px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+
+/* ── SCORE BADGES ON TRACKER ── */
+.tracker-item { position: relative; padding-right: 52px; }
+.score-badge {
+  position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+  font-family: 'DM Mono',monospace; font-size: 10px; font-weight: 600;
+  padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+}
+.score-badge.s-low   { background: rgba(239,68,68,.15);   color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+.score-badge.s-mid   { background: rgba(245,158,11,.15);  color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
+.score-badge.s-high  { background: rgba(16,185,129,.15);  color: #10b981; border: 1px solid rgba(16,185,129,.3); }
+.score-badge.s-ace   { background: rgba(59,130,246,.15);  color: var(--accent); border: 1px solid rgba(59,130,246,.3); }
+
+/* ── QUIZ BUTTONS (shared) ── */
+.quiz-btn {
+  padding: 10px 20px; border-radius: 8px; font-size: 13px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font-family: 'DM Sans',sans-serif; transition: all .2s;
+}
+.quiz-btn:hover:not(:disabled) { background: #1a2235; border-color: #2d3a52; }
+.quiz-btn:disabled { opacity: .4; cursor: not-allowed; }
+.quiz-btn.primary { border-color: var(--accent); color: var(--accent); }
+.quiz-btn.primary:hover:not(:disabled) { background: rgba(59,130,246,.1); }
+.quiz-btn.success { border-color: #10b981; color: #10b981; }
+.quiz-btn.success:hover:not(:disabled) { background: rgba(16,185,129,.1); }
+.quiz-btn.danger  { border-color: #ef4444; color: #ef4444; }
+
 /* ── RESP ── */
 @media (max-width: 560px) {
   .hero-stats { gap: 12px; }

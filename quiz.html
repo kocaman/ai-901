@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Exam — AI-901</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+.quiz-header { display:flex; align-items:center; justify-content:space-between; padding:20px 0 8px; gap:12px; flex-wrap:wrap; }
+.quiz-topic  { font-family:'DM Serif Display',serif; font-size:1.25rem; }
+.quiz-prog-label { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); white-space:nowrap; }
+.prog-track { height:3px; background:var(--border); border-radius:3px; margin-bottom:28px; overflow:hidden; }
+.prog-fill  { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:3px; transition:width .4s ease; }
+
+.q-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:28px; margin-bottom:20px; animation:fadeUp .25s ease; }
+.q-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; gap:8px; flex-wrap:wrap; }
+.q-num   { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; }
+.q-tags  { display:flex; gap:6px; }
+.q-type-badge { font-family:'DM Mono',monospace; font-size:10px; padding:2px 8px; border-radius:4px; }
+.q-type-badge.mc { background:var(--pill-a); color:var(--accent); }
+.q-type-badge.tf { background:var(--pill-b); color:var(--accent2); }
+.q-dom-badge { font-family:'DM Mono',monospace; font-size:10px; padding:2px 8px; border-radius:4px; }
+.q-dom-badge.d1 { background:rgba(245,158,11,.12); color:var(--gold); border:1px solid rgba(245,158,11,.25); }
+.q-dom-badge.d2 { background:rgba(16,185,129,.1); color:#10b981; border:1px solid rgba(16,185,129,.25); }
+.q-text { font-size:15px; line-height:1.65; margin-bottom:22px; font-weight:500; }
+.opt-list { display:flex; flex-direction:column; gap:8px; }
+.opt {
+  background:var(--bg); border:1px solid var(--border); border-radius:8px;
+  padding:12px 16px; cursor:pointer; text-align:left; font-size:14px;
+  color:var(--text); font-family:'DM Sans',sans-serif; transition:all .2s;
+  display:flex; align-items:center; gap:12px; width:100%;
+}
+.opt:hover:not(:disabled) { border-color:#2d3a52; background:#13192a; }
+.opt.selected       { border-color:var(--accent); background:rgba(59,130,246,.08); }
+.opt.correct        { border-color:#10b981; background:rgba(16,185,129,.1); color:#10b981; }
+.opt.wrong          { border-color:#ef4444; background:rgba(239,68,68,.1);  color:#ef4444; }
+.opt.reveal-correct { border-color:#10b981; background:rgba(16,185,129,.06); color:#10b981; }
+.opt:disabled { cursor:default; }
+.opt-label {
+  width:22px; height:22px; border-radius:50%; border:1.5px solid currentColor;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-family:'DM Mono',monospace; flex-shrink:0;
+}
+.quiz-nav { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:40px; }
+.quiz-nav .spacer { flex:1; min-width:8px; }
+.readonly-badge { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); padding:4px 10px; border-radius:4px; background:var(--surface); border:1px solid var(--border); white-space:nowrap; }
+
+/* result */
+.result-card { text-align:center; padding:48px 0 32px; animation:fadeUp .5s ease; }
+.score-big { font-family:'DM Serif Display',serif; line-height:1; margin-bottom:6px; font-size:clamp(3.5rem,10vw,5.5rem); }
+.score-big.s-low  { color:#ef4444; }
+.score-big.s-mid  { color:var(--gold); }
+.score-big.s-high { color:#10b981; }
+.score-big.s-ace  { color:var(--accent); }
+.score-detail { font-family:'DM Mono',monospace; font-size:13px; color:var(--muted); margin-bottom:28px; }
+.result-msg { font-size:1.05rem; line-height:1.7; margin-bottom:28px; max-width:520px; margin-left:auto; margin-right:auto; color:#a8b8d0; }
+.domain-breakdown { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+.dom-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 24px; min-width:160px; text-align:center; }
+.dom-card-label { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:8px; }
+.dom-card-score { font-family:'DM Serif Display',serif; font-size:2rem; margin-bottom:4px; }
+.dom-card-score.d1 { color:var(--gold); }
+.dom-card-score.d2 { color:#10b981; }
+.dom-card-detail { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+.dom-verdict { font-size:11px; margin-top:6px; font-family:'DM Mono',monospace; }
+.dom-verdict.low  { color:#ef4444; }
+.dom-verdict.mid  { color:var(--gold); }
+.dom-verdict.good { color:#10b981; }
+.dom-verdict.ace  { color:var(--accent); }
+.result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:40px; }
+
+/* review */
+.review-section { padding:0 0 60px; }
+.review-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:10px; }
+.review-item.r-ok   { border-color:rgba(16,185,129,.3); }
+.review-item.r-bad  { border-color:rgba(239,68,68,.3); }
+.review-item.r-skip { border-color:rgba(245,158,11,.25); }
+.r-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+.r-qnum   { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+.r-verdict { font-family:'DM Mono',monospace; font-size:10px; padding:2px 8px; border-radius:4px; }
+.r-verdict.ok   { background:rgba(16,185,129,.15); color:#10b981; }
+.r-verdict.bad  { background:rgba(239,68,68,.15);  color:#ef4444; }
+.r-verdict.skip { background:rgba(245,158,11,.15); color:var(--gold); }
+.r-dom { font-family:'DM Mono',monospace; font-size:9px; padding:2px 6px; border-radius:3px; }
+.r-dom.d1 { background:rgba(245,158,11,.1); color:var(--gold); }
+.r-dom.d2 { background:rgba(16,185,129,.1); color:#10b981; }
+.r-qtext { font-size:14px; font-weight:600; margin-bottom:12px; line-height:1.5; }
+.r-opts  { display:flex; flex-direction:column; gap:5px; }
+.r-opt   { font-size:12.5px; padding:7px 12px; border-radius:6px; display:flex; align-items:center; gap:8px; }
+.r-opt.r-correct { background:rgba(16,185,129,.1); color:#10b981; }
+.r-opt.r-wrong   { background:rgba(239,68,68,.1);  color:#ef4444; }
+.r-opt.r-plain   { color:var(--muted); }
+.r-tag { font-size:9px; font-family:'DM Mono',monospace; margin-left:auto; opacity:.8; white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="nav-badge" href="index.html">
+      <div class="cert-icon">🤖</div>
+      <span class="nav-title">AI-901 // Azure AI Fundamentals</span>
+    </a>
+    <div class="nav-links">
+      <a href="objectives.html">Objectives</a>
+      <a href="tracker.html" class="active">Quiz</a>
+      <a href="resources.html">Resources</a>
+    </div>
+    <div id="user-widget" class="user-widget"></div>
+  </div>
+</nav>
+
+<div class="wrap" id="app"></div>
+
+<script src="js/user.js"></script>
+<script src="js/questions.js"></script>
+<script>
+/* ── CONFIG ── */
+const TOTAL_Q = 50;
+
+/* ── GUARD ── */
+if (typeof QUESTION_BANK === 'undefined' || QUESTION_BANK.length < TOTAL_Q) {
+  document.getElementById('app').innerHTML =
+    '<p style="padding:60px 0;color:var(--muted);">Question bank not loaded. <a href="tracker.html" style="color:var(--accent2)">Back to tracker</a></p>';
+}
+
+/* ── SHUFFLE ── */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ── INIT ── */
+const questions = shuffle([...QUESTION_BANK]).slice(0, TOTAL_Q);
+let dispIdx = 0;
+let maxIdx  = 0;
+const answers = new Array(TOTAL_Q).fill(null);
+const checked = new Array(TOTAL_Q).fill(false);
+
+initUser(false);
+buildPage();
+
+/* ── BUILD SKELETON ── */
+function buildPage() {
+  document.getElementById('app').innerHTML = `
+    <div class="quiz-header">
+      <div>
+        <div class="section-label">AI-901 Practice Exam</div>
+        <div class="quiz-topic">50 Random Questions · All Topics</div>
+      </div>
+      <div class="quiz-prog-label" id="prog-label">1 / ${TOTAL_Q}</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div id="question-screen"></div>
+    <div id="result-screen"  style="display:none"></div>
+    <div id="review-screen"  style="display:none"></div>`;
+  renderQuestion();
+}
+
+/* ── RENDER QUESTION ── */
+function renderQuestion() {
+  const q          = questions[dispIdx];
+  const isReadOnly = dispIdx < maxIdx;
+  const isChecked  = checked[dispIdx];
+  const selected   = answers[dispIdx];
+  const isLast     = dispIdx === TOTAL_Q - 1;
+  const labels     = q.type === 'tf' ? ['T','F'] : ['A','B','C','D'];
+
+  document.getElementById('prog-label').textContent    = `${dispIdx + 1} / ${TOTAL_Q}`;
+  document.getElementById('prog-fill').style.width     = `${((dispIdx + 1) / TOTAL_Q) * 100}%`;
+
+  const optsHtml = q.opts.map((opt, i) => {
+    let cls = 'opt';
+    if (isChecked) {
+      if (i === q.a && i === selected) cls = 'opt correct';
+      else if (i === q.a)              cls += ' reveal-correct';
+      else if (i === selected)         cls += ' wrong';
+    } else if (i === selected) {
+      cls += ' selected';
+    }
+    const disabled = (isChecked || isReadOnly) ? 'disabled' : '';
+    return `<button class="${cls}" ${disabled} onclick="selectOpt(${i})">
+      <span class="opt-label">${labels[i]}</span>${opt}
+    </button>`;
+  }).join('');
+
+  const showPrev   = dispIdx > 0;
+  const canCheck   = !isChecked && !isReadOnly && selected !== null;
+  const canNext    = isReadOnly || isChecked;
+  const showSubmit = isLast && isChecked && !isReadOnly;
+
+  document.getElementById('question-screen').innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">Question ${dispIdx + 1} of ${TOTAL_Q}</span>
+        <div class="q-tags">
+          <span class="q-type-badge ${q.type}">${q.type === 'tf' ? 'True / False' : 'Multiple Choice'}</span>
+          <span class="q-dom-badge d${q.domain}">Domain ${q.domain}</span>
+        </div>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="opt-list">${optsHtml}</div>
+    </div>
+    <div class="quiz-nav">
+      ${showPrev   ? `<button class="quiz-btn" onclick="goPrev()">← Previous</button>` : ''}
+      ${isReadOnly ? `<span class="readonly-badge">Viewing past question</span>` : ''}
+      <div class="spacer"></div>
+      ${!isReadOnly && !isChecked
+        ? `<button class="quiz-btn primary" id="btn-check" onclick="checkAnswer()" ${selected === null ? 'disabled' : ''}>Check Answer</button>`
+        : ''}
+      ${showSubmit
+        ? `<button class="quiz-btn success" onclick="submitQuiz()">Submit Exam →</button>`
+        : `<button class="quiz-btn" onclick="goNext()" ${!canNext ? 'disabled' : ''}>Next →</button>`}
+    </div>`;
+}
+
+/* ── INTERACTIONS ── */
+function selectOpt(i) {
+  if (checked[dispIdx] || dispIdx < maxIdx) return;
+  answers[dispIdx] = i;
+  renderQuestion();
+}
+
+function checkAnswer() {
+  if (answers[dispIdx] === null) return;
+  checked[dispIdx] = true;
+  renderQuestion();
+}
+
+function goNext() {
+  if (dispIdx < maxIdx) { dispIdx++; }
+  else if (dispIdx < TOTAL_Q - 1) { maxIdx = dispIdx + 1; dispIdx = maxIdx; }
+  renderQuestion();
+}
+
+function goPrev() {
+  if (dispIdx > 0) { dispIdx--; renderQuestion(); }
+}
+
+/* ── SUBMIT ── */
+function submitQuiz() {
+  let total=0, d1t=0, d1c=0, d2t=0, d2c=0;
+  questions.forEach((q, i) => {
+    total++;
+    const correct = answers[i] === q.a;
+    if (q.domain === 1) { d1t++; if (correct) d1c++; }
+    else                { d2t++; if (correct) d2c++; }
+  });
+  const overall = Math.round(((d1c + d2c) / total) * 100);
+  const d1pct   = d1t ? Math.round((d1c / d1t) * 100) : 0;
+  const d2pct   = d2t ? Math.round((d2c / d2t) * 100) : 0;
+
+  // Persist score
+  const u = getUsername();
+  if (u) {
+    localStorage.setItem(`ai901_quiz_${u}`, JSON.stringify({
+      overall, d1pct, d2pct, d1c, d1t, d2c, d2t, ts: Date.now()
+    }));
+  }
+  showResults(overall, d1pct, d2pct, d1c, d1t, d2c, d2t);
+}
+
+/* ── RESULTS ── */
+function scoreCls(p) {
+  return p >= 90 ? 'ace' : p >= 70 ? 'good' : p >= 50 ? 'mid' : 'low';
+}
+function bigCls(p) {
+  return p >= 90 ? 's-ace' : p >= 70 ? 's-high' : p >= 50 ? 's-mid' : 's-low';
+}
+function domVerdict(p) {
+  if (p >= 90) return { cls:'ace',  txt:'Expert level 🔥' };
+  if (p >= 70) return { cls:'good', txt:'Solid — keep sharpening' };
+  if (p >= 50) return { cls:'mid',  txt:'Needs more work' };
+  return             { cls:'low',  txt:'Focus here first' };
+}
+
+function showResults(overall, d1pct, d2pct, d1c, d1t, d2c, d2t) {
+  document.getElementById('question-screen').style.display = 'none';
+  const rs = document.getElementById('result-screen');
+  rs.style.display = '';
+
+  let msg;
+  if (overall < 70) {
+    msg = `<strong>Keep grinding.</strong> ${overall}% is a start, but you need more time with this material. Dig back into the objectives, use the study tracker, then come back and destroy it.`;
+  } else if (overall < 90) {
+    msg = `<strong>Solid foundation.</strong> ${overall}% — you clearly know this stuff. A bit more polish on your weaker domain and you'll be unstoppable. Study the breakdowns below.`;
+  } else {
+    msg = `<strong>Elite-level knowledge.</strong> ${overall}% — that's exam-ready. You've mastered this content. Walk in with confidence.`;
+  }
+
+  const d1v = domVerdict(d1pct);
+  const d2v = domVerdict(d2pct);
+
+  rs.innerHTML = `
+    <div class="result-card">
+      <div class="score-big ${bigCls(overall)}">${overall}%</div>
+      <div class="score-detail">${d1c + d2c} of ${TOTAL_Q} questions correct</div>
+      <div class="result-msg">${msg}</div>
+      <div class="domain-breakdown">
+        <div class="dom-card">
+          <div class="dom-card-label">Domain 1 · AI Concepts</div>
+          <div class="dom-card-score d1">${d1pct}%</div>
+          <div class="dom-card-detail">${d1c} / ${d1t} correct</div>
+          <div class="dom-verdict ${d1v.cls}">${d1v.txt}</div>
+        </div>
+        <div class="dom-card">
+          <div class="dom-card-label">Domain 2 · Foundry &amp; Impl.</div>
+          <div class="dom-card-score d2">${d2pct}%</div>
+          <div class="dom-card-detail">${d2c} / ${d2t} correct</div>
+          <div class="dom-verdict ${d2v.cls}">${d2v.txt}</div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="quiz-btn primary" onclick="showReview()">Review All Answers</button>
+        <a class="quiz-btn" href="tracker.html">← Back to Tracker</a>
+        <button class="quiz-btn" onclick="location.reload()">Retake Exam</button>
+      </div>
+    </div>`;
+}
+
+/* ── REVIEW ── */
+function showReview() {
+  document.getElementById('result-screen').style.display = 'none';
+  const rv = document.getElementById('review-screen');
+  rv.style.display = '';
+  const labels = ['A','B','C','D'];
+
+  let html = `<div class="section-label" style="padding:20px 0 16px">Full Answer Review · ${TOTAL_Q} Questions</div>
+    <div class="review-section">`;
+
+  questions.forEach((q, qi) => {
+    const sel     = answers[qi];
+    const correct = q.a;
+    const isOk    = sel === correct;
+    const isSkip  = sel === null;
+    const rowCls  = isSkip ? 'r-skip' : isOk ? 'r-ok' : 'r-bad';
+    const vLabel  = isSkip ? 'Not answered' : isOk ? '✓ Correct' : '✗ Wrong';
+    const vCls    = isSkip ? 'skip'          : isOk ? 'ok'        : 'bad';
+    const lb      = q.type === 'tf' ? ['True','False'] : labels;
+
+    const optsHtml = q.opts.map((opt, oi) => {
+      let cls = 'r-opt r-plain';
+      let tag = '';
+      if (oi === correct && oi === sel)  { cls = 'r-opt r-correct'; tag = '<span class="r-tag">✓ YOUR ANSWER</span>'; }
+      else if (oi === correct)           { cls = 'r-opt r-correct'; tag = '<span class="r-tag">CORRECT</span>'; }
+      else if (oi === sel)               { cls = 'r-opt r-wrong';   tag = '<span class="r-tag">YOUR ANSWER</span>'; }
+      return `<div class="${cls}">${lb[oi]}. ${opt}${tag}</div>`;
+    }).join('');
+
+    html += `
+      <div class="review-item ${rowCls}">
+        <div class="r-header">
+          <span class="r-qnum">Q${qi + 1}</span>
+          <span class="r-verdict ${vCls}">${vLabel}</span>
+          <span class="r-dom d${q.domain}">Domain ${q.domain}</span>
+        </div>
+        <div class="r-qtext">${q.q}</div>
+        <div class="r-opts">${optsHtml}</div>
+      </div>`;
+  });
+
+  html += `</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding-bottom:48px;">
+      <a class="quiz-btn" href="tracker.html">← Back to Tracker</a>
+      <button class="quiz-btn" onclick="location.reload()">Retake Exam</button>
+    </div>`;
+  rv.innerHTML = html;
+}
+</script>
+</body>
+</html>
